@@ -1,3 +1,5 @@
+% hello
+
 % this is the main file for households learning in Iacoviello (2015), with dynare and all the other stuff
 
 % first thing. Run dynare file and obtain transition matrix
