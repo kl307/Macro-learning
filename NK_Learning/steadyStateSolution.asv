@@ -25,6 +25,5 @@ Invst     = kst*delta;
 cst       = Yst - Invst;
 rKst      = (1/beta) - 1 + delta;
 wst       = (1/Xst)*(1-alpha)*(kst^alpha)*(Lst^(1-alpha));
-Rst       = 1/beta;
 profit_st = (1-(1/Xst))*Yst;
-Tst       = cst+kst-wst*Lst-Rst*kst-profit_st; 
+Tst       = cst + kst - wst 
