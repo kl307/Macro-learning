@@ -2,6 +2,8 @@
 
 var R w c L rK k Y Inv X infl A;
 
+predetermined_variables k;
+
 varexo shock;
 
 parameters eta beta epsilon alpha delta rho theta alphaPI alphaY Lst kst Yst Invst cst rKst wst Rst;
@@ -44,7 +46,7 @@ A = rho*A(-1) + shock;
 
 // 3 eqn. Household Euler equation 
 
-c(+1) = c + R(+1) - infl(+1);
+-c = -c(+1) + R(+1) - infl(+1);
 
 // 4 eqn. Labour supply
 
@@ -52,15 +54,15 @@ w = c + (eta-1)*L;
 
 // 5 eqn. Real Interest Rate
 
-rK = (alpha-1)*k - X + (1-alpha)*L;
+rK = (alpha-1)*k - X + (1-alpha)*L + A;
 
 // 6 eqn. Some Identity
 
-R*Rst = rK*rKst - Rst*infl;
+R*Rst = rK*rKst + Rst*infl;
 
 // 7 eqn. Labour Demand
 
-w = A + alpha*k + alpha*L - X;
+w = A + alpha*k - alpha*L - X;
 
 // 8 eqn. Production Function
 
@@ -84,7 +86,7 @@ shocks;
 
 var shock;
 
-stderr 1;
+stderr 0.01;
 
 end;
 

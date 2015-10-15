@@ -24,4 +24,4 @@ Yst    = (kst^alpha)*(Lst^(1-alpha));
 Invst  = kst*delta;
 cst    = Yst - Invst;
 rKst   = (1/beta) - 1 + delta;
-wst    = (1/Xst)*(1-alpha)*(kst^alpha)*(Lst^alpha);
+wst    = (1/Xst)*(1-alpha)*(kst^alpha)*(Lst^(1-alpha));

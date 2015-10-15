@@ -9,37 +9,187 @@ Computing dynamic model derivatives:
 Processing outputs ...done
 Preprocessing completed.
 Starting MATLAB/Octave computing.
-path.m',109,1)">path at 109</a>
-  In <a href="matlab: opentoline('C:\Program Files\MATLAB\R2014b\toolbox\matlab\general\addpath.m',86,1)">addpath at 86</a>
-  In <a href="matlab: opentoline('C:\dynare\4.4.3\matlab\dynare_config.m',188,1)">dynare_config at 188</a>
-  In <a href="matlab: opentoline('C:\dynare\4.4.3\matlab\dynare.m',48,1)">dynare at 48</a>] 
-[Warning: Function ordeig has the same name as a MATLAB builtin. We suggest you rename the function to avoid a potential name conflict.] 
-[> In <a href="matlab: opentoline('C:\Program Files\MATLAB\R2014b\toolbox\matlab\general\path.m',109,1)">path at 109</a>
-  In <a href="matlab: opentoline('C:\Program Files\MATLAB\R2014b\toolbox\matlab\general\addpath.m',86,1)">addpath at 86</a>
-  In <a href="matlab: opentoline('C:\dynare\4.4.3\matlab\dynare_config.m',188,1)">dynare_config at 188</a>
-  In <a href="matlab: opentoline('C:\dynare\4.4.3\matlab\dynare.m',48,1)">dynare at 48</a>] 
+Lst =
+    0.8201
+kst =
+   15.1681
+Yst =
+    1.9679
+Invst =
+    0.3792
+cst =
+    1.5887
+rKst =
+    0.0454
+wst =
+    1.7398
+Rst =
+    1.0204
 
-Configuring Dynare ...
-[mex] Generalized QZ.
-[mex] Sylvester equation solution.
-[mex] Kronecker products.
-[mex] Sparse kronecker products.
-[mex] Local state space iteration (second order).
-[mex] Bytecode evaluation.
-[mex] k-order perturbation solver.
-[mex] k-order solution simulation.
-[mex] Quasi Monte-Carlo sequence (Sobol).
-[mex] Markov Switching SBVAR.
 
-Starting Dynare (version 4.4.3).
-Starting preprocessing of the model file ...
-Found 11 equation(s).
-Evaluating expressions...done
-Computing static model derivatives:
- - order 1
-Computing dynamic model derivatives:
- - order 1
-Processing outputs ...done
-Preprocessing completed.
-Starting MATLAB/Octave computing.
 
+
+Residuals of the static equations:
+
+Equation number 1 : 0
+Equation number 2 : 0
+Equation number 3 : 0
+Equation number 4 : 0
+Equation number 5 : 0
+Equation number 6 : 0
+Equation number 7 : 0
+Equation number 8 : 0
+Equation number 9 : 0
+Equation number 10 : 0
+Equation number 11 : 0
+
+
+Lst =
+    0.8201
+kst =
+   15.1681
+Yst =
+    1.9679
+Invst =
+    0.3792
+cst =
+    1.5887
+rKst =
+    0.0454
+wst =
+    1.7398
+Rst =
+    1.0204
+
+STEADY-STATE RESULTS:
+
+R    		 0
+w    		 0
+c    		 0
+L    		 0
+rK   		 0
+k    		 0
+Y    		 0
+Inv  		 0
+X    		 0
+infl 		 0
+A    		 0
+Lst =
+    0.8201
+kst =
+   15.1681
+Yst =
+    1.9679
+Invst =
+    0.3792
+cst =
+    1.5887
+rKst =
+    0.0454
+wst =
+    1.7398
+Rst =
+    1.0204
+
+EIGENVALUES:
+         Modulus             Real        Imaginary
+
+             0.9              0.9                0
+           0.936            0.936                0
+           1.077            1.077                0
+           4.788            4.788                0
+             Inf              Inf                0
+
+
+There are 3 eigenvalue(s) larger than 1 in modulus 
+for 3 forward-looking variable(s)
+
+The rank condition is verified.
+
+Lst =
+    0.8201
+kst =
+   15.1681
+Yst =
+    1.9679
+Invst =
+    0.3792
+cst =
+    1.5887
+rKst =
+    0.0454
+wst =
+    1.7398
+Rst =
+    1.0204
+
+MODEL SUMMARY
+
+  Number of variables:         11
+  Number of stochastic shocks: 1
+  Number of state variables:   2
+  Number of jumpers:           3
+  Number of static variables:  6
+
+
+MATRIX OF COVARIANCE OF EXOGENOUS SHOCKS
+
+Variables     shock  
+shock        0.000100
+
+POLICY AND TRANSITION FUNCTIONS
+                                    R               w               c               L               rK              k               Y               Inv             X               infl            A   
+k(-1)                      -0.419633        0.349476        0.560816       -0.211340       -0.861864        0.935990        0.152062       -1.560413        0.013926       -0.381280               0
+A(-1)                      -0.602821        0.653660       -0.094793        0.748453        1.402112        0.077900        0.523917        3.116004        0.021805       -0.665215        0.900000
+shock                      -0.669801        0.726288       -0.105326        0.831614        1.557902        0.086556        0.582130        3.462227        0.024227       -0.739127        1.000000
+
+
+THEORETICAL MOMENTS
+
+VARIABLE      MEAN    STD. DEV.   VARIANCE 
+R              0.0000     0.0212     0.0004
+w              0.0000     0.0213     0.0005
+c              0.0000     0.0096     0.0001
+L              0.0000     0.0170     0.0003
+rK             0.0000     0.0292     0.0009
+k              0.0000     0.0193     0.0004
+Y              0.0000     0.0153     0.0002
+Inv            0.0000     0.0664     0.0044
+X              0.0000     0.0007     0.0000
+infl           0.0000     0.0221     0.0005
+A              0.0000     0.0229     0.0005
+
+
+
+MATRIX OF CORRELATIONS
+
+Variables      R       w       c       L      rK       k       Y      Inv      X     infl      A   
+R            1.0000 -0.9984 -0.6727 -0.8729 -0.7022 -0.8554 -0.9875 -0.7712 -0.9998  0.9991 -0.9510
+w           -0.9984  1.0000  0.6302  0.8989  0.7410  0.8251  0.9948  0.8057  0.9993 -0.9999  0.9668
+c           -0.6727  0.6302  1.0000  0.2263 -0.0543  0.9587  0.5476  0.0478  0.6586 -0.6411  0.4109
+L           -0.8729  0.8989  0.2263  1.0000  0.9603  0.4941  0.9390  0.9838  0.8820 -0.8926  0.9810
+rK          -0.7022  0.7410 -0.0543  0.9603  1.0000  0.2320  0.8058  0.9948  0.7156 -0.7315  0.8880
+k           -0.8554  0.8251  0.9587  0.4941  0.2320  1.0000  0.7630  0.3300  0.8454 -0.8330  0.6533
+Y           -0.9875  0.9948  0.5476  0.9390  0.8058  0.7630  1.0000  0.8620  0.9903 -0.9932  0.9879
+Inv         -0.7712  0.8057  0.0478  0.9838  0.9948  0.3300  0.8620  1.0000  0.7831 -0.7972  0.9303
+X           -0.9998  0.9993  0.6586  0.8820  0.7156  0.8454  0.9903  0.7831  1.0000 -0.9997  0.9567
+infl         0.9991 -0.9999 -0.6411 -0.8926 -0.7315 -0.8330 -0.9932 -0.7972 -0.9997  1.0000 -0.9631
+A           -0.9510  0.9668  0.4109  0.9810  0.8880  0.6533  0.9879  0.9303  0.9567 -0.9631  1.0000
+
+
+
+COEFFICIENTS OF AUTOCORRELATION
+
+Order      1       2       3       4       5   
+R        0.9486  0.8992  0.8518  0.8065  0.7631
+w        0.9403  0.8839  0.8308  0.7807  0.7336
+c        0.9874  0.9705  0.9500  0.9266  0.9010
+L        0.8722  0.7589  0.6586  0.5699  0.4916
+rK       0.8450  0.7089  0.5898  0.4857  0.3949
+k        0.9965  0.9872  0.9731  0.9549  0.9335
+Y        0.9244  0.8548  0.7908  0.7317  0.6773
+Inv      0.8525  0.7228  0.6088  0.5090  0.4216
+X        0.9458  0.8941  0.8448  0.7979  0.7532
+infl     0.9424  0.8878  0.8362  0.7873  0.7411
+A        0.9000  0.8100  0.7290  0.6561  0.5905
+Total computing time : 0h00m03s

@@ -15,7 +15,7 @@ function LabourSteadyState = solveLabour(Lst)
     
     clear paramValues
     
-    LabourSteadyState = ((((1-alpha)/Xst)*((Xst/alpha)*((1/beta)-1+delta))^(alpha/(alpha-1)))*Lst^(2*alpha)) - ...
+    LabourSteadyState = ((((1-alpha)/Xst)*((Xst/alpha)*((1/beta)-1+delta))^(alpha/(alpha-1)))*Lst) - ...
        (Lst^(eta-1))*(Lst*((Xst/alpha) *((1/beta)-1+delta))^(alpha/(alpha-1)) - delta*Lst*((Xst/alpha)-1+delta)^(1/(alpha-1)));
    
 

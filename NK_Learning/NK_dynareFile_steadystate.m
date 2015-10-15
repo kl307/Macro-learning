@@ -45,6 +45,17 @@ rKst   = (1/beta) - 1 + delta;
 wst    = (1/Xst)*(1-alpha)*(kst^alpha)*(Lst^alpha);
 Rst    = 1/beta;
 
+
+Lst
+kst
+Yst
+Invst
+cst
+rKst
+wst
+Rst
+
+
 %end of solutions part
 
 %set log-linearized deviation initially equal to zero
