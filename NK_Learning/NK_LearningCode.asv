@@ -9,7 +9,7 @@ clear paramValues Linit
 timePeriod      = 40;   % time period of model
 forecastPeriod  = 100;  % forecasting period
 gainParam       = 0.04; % constant gain parameter
-numVars         = 11;   % number of variables in the model, without shock
+numVars         = 12;   % number of variables in the model, without shock
 allVariables    = zeros(numVars,timePeriod); % all variables at time T
 CGpredictedW    = zeros(1,timePeriod); % these are predicted values from the learning algorithm
 CGpredictedR    = zeros(1,timePeriod);
@@ -118,6 +118,9 @@ phiT(:,1)  = 0.001*randn(3,1);
 phiK(:,1)  = 0.001*randn(3,1);
 D_Old      = eye(3); % initialize D as an identity matrix (meaning there are no cors between variables
 
+% compute Lst coefficient
+
+LsCoef = (1/( ((eta-alpha)*Lst^(eta-alpha)) - ((1-alpha)/(alpha*cst))*(1/beta)*alphaY*(1-alpha)) )*((1-alpha)/(alpha*cst));
 
 % do learning
 
@@ -138,10 +141,11 @@ for t = 2:3-1
        allVariables(9,t-1)  = profit_st;
        allVariables(10,t-1) = Tst;
        allVariables(11,t-1) = 1; % this is inflation
+       allVariables(12,t-1) = Xst;
        
        % LEARNING ALGO, BEGIN
        
-       zMat  = [ 1 allVariables(2,t-1) allVariables(11,t-1) ]'; % this is capital and productivity shock at T-1
+       zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]'; % this is capital and productivity shock at T-1
        D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
        
        phiR(:,t)  = phiR(:,t-1)  + gainParam * D_New \ zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning 
@@ -226,28 +230,94 @@ for t = 2:3-1
           
        end
        
+       % capital
        
-       % now update other variables
+       allVariables(2,t) = (1-delta)*allVariables(2,t-1) + allVariables(4,t-1);
        
-       % Taylor rule for R
-       
-       allVariables(8,t) = alphaY*
-       
-       % Phillips curve for inflation
-       
+       % inflation, Phillips curve
+      
+       allVariables(11,t) = (1/beta)*(allVariables(11,t-1)+(1/theta)*((1-theta*beta)*(1-theta))*allVariables(12,t-1));
        
        % consumption
-       allVariables(5,t) = (-1/(C_0+G_C(1,forecastPeriod))) * (C_w*CGpredictedW(1,t-1) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*CGpredictedPi(1,t-1)-allVariables(9,t-1)) + ...
-                           C_A*A_hat(1,t) + C_k *CGpredictedK(1,t-1) + Tst*CGpredictedT(1,t-1) + Rst*kst*(CGpredictedR(1,t-1)+allVariables(2,t-1)-allVariables(9,t-1)) + ...
+       allVariables(5,t) = (-1/(C_0+G_C(1,forecastPeriod))) * (C_w*CGpredictedW(1,t-1) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*CGpredictedPi(1,t-1)-allVariables(11,t)) + ...
+                           C_A*A_hat(1,t) + C_k *allVariables(2,t) + Tst*CGpredictedT(1,t-1) + Rst*kst*(CGpredictedR(1,t-1)+allVariables(2,t-1)-allVariables(9,t-1)) + ...
                            sum(Big_Sum_Pi) - sum(Big_Sum_R) + sum(G_C_R_Sum) - sum(G_C_Pi_Sum) + sum(G_W_W_Sum) + (theta/((1-theta*beta)*(1-theta)))*sum(Sum_2_Pi) +...
                            sum(G_A_A_Sum) + sum(G_K_Sum) + sum(G_T_Sum));
+      
+      
        
-                       
+      % labour
+      
+      allVariables(1,t) = LsCoef*((1/beta)*(alphaPi*allVariables(11,t)+alphaY*(A_hat(1,t) + alpha*CGpredictedK(1,t-1))) - allVariables(11,t) - ((1/beta) - 1 - delta)*allVariables(5,t));
+      
+      % output
+      
+      allVariables(3,t) = A_hat(1,t) + alpha*(allVariables(2,t)) + (1-alpha)*(allVariables(1,t));
+      
+      % wage
+      
+      allVariables(7,t) = allVariables(5,t) + (1-eta)*allVariables(1,t);
+      
+      % markup Xst
+      
+      allVariables(12,t) = A_hat(1,t) + alpha*allVariables(2,t) - alpha*allVariables(1,t) - allVariables(7,t);
+      
+      % solve for rK
+      
+      allVariables(6,t) = (alpha-1)*allVariables(2,t) - allVariables(12,t) + (1-alpha)*allVariables(1,t);
+      
+      % solve Investment
+      
+      allVariables(4,t) = allVariables(3,t)*(Yst/Invst) - (cst/Invst)*allVariables(5,t);
+      
+      % profit
+      
+      allVariables(9,t) = (Yst*(1-(1/Xst)) *allVariables(3,t) + (Yst/Xst)*allVariables(12,t))/profit_st;
+      
+      % R interest rate, Taylor rule
+      
+      allVariables(8,t) = alphaPi*allVariables(11,t) + alphaY*allVariables(3,t);
+      
+      % transfers
+      
+      allVariables(10,t) = (cst*allVariables(5,t) + kst*allVariables(2,t) - wst*Lst*allVariables(7,t) - wst*Lst*allVariables(1,t)-Rst*kst*allVariables(8,t) - Rst*kst*allVariables(2,t) + ...
+                            Rst*kst*allVariables(11,t) - profit_st*allVariables(8,t))/Tst;
+                        
+    else
         
+        
+       zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]'; % this is capital and productivity shock at T-1
+       D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
+        
+       phiR(:,t)  = phiR(:,t-1)  + gainParam * D_New \ zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning
+       phiW(:,t)  = phiW(:,t-1)  + gainParam * D_New \ zMat * (allVariables(7,t)  - phiW(:,t-1)'  * zMat);
+       phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
+       phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
+       phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
+       
+       CGpredictedR(1,t-1)  = phiR(:,t)'  * zMat; % R
+       CGpredictedW(1,t-1)  = phiW(:,t)'  * zMat; % Wage
+       CGpredictedPi(1,t-1) = phiPi(:,t)' * zMat; % Inflation
+       CGpredictedT(1,t-1)  = phiT(:,t)'  * zMat; % Transfers
+       CGpredictedK(1,t-1)  = phiK(:,t)'  * zMat; % Capital
+       
+       RPrediction  = zeros(1,forecastPeriod);
+       wPrediction  = zeros(1,forecastPeriod);
+       PiPrediction = zeros(1,forecastPeriod);
+       TPrediction  = zeros(1,forecastPeriod);
+       KPrediction  = zeros(1,forecastPeriod);
+       
+       
+       
+       
+       
+       
+       
     end
     
     
-end
+    
+  end
 
 
 

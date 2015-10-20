@@ -16,6 +16,8 @@ delta   = paramValues.delta;
 Xst     = epsilon/(epsilon-1);
 rho     = paramValues.rho;
 theta   = paramValues.theta;
+alphaPi = paramValues.alphaPi;
+alphaY  = paramValues.alphaY;
     
 % evaluate function
     
