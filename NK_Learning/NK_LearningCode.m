@@ -19,27 +19,13 @@ CGpredictedK    = zeros(1,timePeriod);
 
 % create vector of shocks
 
-A_hat      = zeros(1,timePeriod+forecastPeriod);
-A_hat(1,1) = 1; % initialize A_hat at 1
+A_hat           = zeros(1,timePeriod+forecastPeriod);
+A_hat_predicted = zeros(1,timePeriod+forecastPeriod);
+A_hat(1,1)      = 0.01*randn; % initialize A_hat at 1
 
 for j = 2:timePeriod+forecastPeriod
    
-    A_hat(1,j) = A_hat(1,j-1) * 0.1*randn;
-    
-end
-
-clear j
-
-% create vector of capital
-
-Capital      = zeros(1,timePeriod+forecastPeriod);
-Capital(1,1) = kst; % initialize capital at steady state level
-
-% how does the capital evolve then?
-
-for j = 2:timePeriod+forecastPeriod
-   
-    A_hat(1,j) = A_hat(1,j-1) * 0.1*randn;
+    A_hat(1,j) = rho*A_hat(1,j-1) + 0.01*randn;
     
 end
 
@@ -57,30 +43,6 @@ BigLambda = wst*Lst+Tst+profit_st-cst;
 
 % calculate sums now
 
-G_C_temp = zeros(1,forecastPeriod);
-G_w_temp = zeros(1,forecastPeriod);
-G_X_temp = zeros(1,forecastPeriod);
-G_A_temp = zeros(1,forecastPeriod);
-G_k_temp = zeros(1,forecastPeriod);
-G_T_temp = zeros(1,forecastPeriod);
-
-% fill in the sums now
-
-for j = 1:forecastPeriod
-    
-   G_C_temp(1,j) = ((1/Rst)^j)*C_0;
-   G_w_temp(1,j) = ((1/Rst)^j)*C_w;
-   G_X_temp(1,j) = ((1/Rst)^j)*C_X;
-   G_A_temp(1,j) = ((1/Rst)^j)*C_A;
-   G_k_temp(1,j) = ((1/Rst)^j)*C_k;
-   G_T_temp(1,j) = ((1/Rst)^j)*Tst;
-   
-end
-
-clear j
-
-% calculate final sums
-
 G_C = zeros(1,forecastPeriod);
 G_w = zeros(1,forecastPeriod);
 G_X = zeros(1,forecastPeriod);
@@ -88,18 +50,21 @@ G_A = zeros(1,forecastPeriod);
 G_k = zeros(1,forecastPeriod);
 G_T = zeros(1,forecastPeriod);
 
+% fill in the sums now
+
 for j = 1:forecastPeriod
-   
-    G_C(1,j) = sum(G_C_temp(1,1:j));
-    G_w(1,j) = sum(G_w_temp(1,1:j));
-    G_X(1,j) = sum(G_X_temp(1,1:j));
-    G_A(1,j) = sum(G_A_temp(1,1:j));
-    G_k(1,j) = sum(G_k_temp(1,1:j));
-    G_T(1,j) = sum(G_T_temp(1,1:j));
     
+   G_C(1,j) = C_0*Rst/(Rst-1)*(1/Rst)^j;
+   G_w(1,j) = C_w*Rst/(Rst-1)*(1/Rst)^j;
+   G_X(1,j) = C_X*Rst/(Rst-1)*(1/Rst)^j;
+   G_A(1,j) = C_A*Rst/(Rst-1)*(1/Rst)^j;
+   G_k(1,j) = C_k*Rst/(Rst-1)*(1/Rst)^j;
+   G_T(1,j) = Tst*Rst/(Rst-1)*(1/Rst)^j;
+   
 end
 
 clear j
+
 
 % now initialize learning parameters
 
@@ -143,30 +108,27 @@ for t = 2:timePeriod
        allVariables(11,t-1) = 1; % this is inflation
        allVariables(12,t-1) = Xst;
        
+       % update capital
+       
+       allVariables(2,t) = (1-delta)*allVariables(2,t-1) + allVariables(4,t-1);
+       
+       A_hat_predicted(1,t-1) = rho*A_hat(1,t-1);
+       
        % LEARNING ALGO, BEGIN
        
-       zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]'; % this is capital and productivity shock at T-1
-       D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
-       
-       phiR(:,t)  = phiR(:,t-1)  + gainParam * D_New \ zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning 
-       phiW(:,t)  = phiW(:,t-1)  + gainParam * D_New \ zMat * (allVariables(7,t)  - phiW(:,t-1)'  * zMat);
-       phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
-       phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
-       phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
-       
-       % LEARNING ALOG, END
+       keqing  = [ 1 allVariables(2,t) A_hat_predicted(1,t-1) ]'; % this is capital and productivity shock at T-1
+     
        
        % calculate predictions based on estimates for one period ahead
        
-       CGpredictedR(1,t-1)  = phiR(:,t)'  * zMat; % R
-       CGpredictedW(1,t-1)  = phiW(:,t)'  * zMat; % Wage
-       CGpredictedPi(1,t-1) = phiPi(:,t)' * zMat; % Inflation
-       CGpredictedT(1,t-1)  = phiT(:,t)'  * zMat; % Transfers
-       CGpredictedK(1,t-1)  = phiK(:,t)'  * zMat; % Capital
+       CGpredictedR(1,t-1)  = phiR(:,t-1)'  * keqing; % R
+       CGpredictedW(1,t-1)  = phiW(:,t-1)'  * keqing; % Wage
+       CGpredictedPi(1,t-1) = phiPi(:,t-1)' * keqing; % Inflation
+       CGpredictedT(1,t-1)  = phiT(:,t-1)'  * keqing; % Transfers
        
-       % calculate predictions j steps ahead
+       %next period
        
-       % initialize predictions
+              % initialize predictions
        
        RPrediction  = zeros(1,forecastPeriod);
        wPrediction  = zeros(1,forecastPeriod);
@@ -180,22 +142,35 @@ for t = 2:timePeriod
        TPrediction(1,1)  = CGpredictedT(1,t-1);
        KPrediction(1,1)  = CGpredictedK(1,t-1);
        
+       for i = 2:forecastPeriod
+           
+       KPrediction(1,i)  = phiK(:,t-1)'  * keqing; % Capital
+       
+       A_hat_predicted(1,i) = rho*A_hat_predicted(1,i-1);
+       
+       keqing  = [ 1 KPrediction(1,i) A_hat_predicted(1,i) ]'; 
+       
+       CGpredictedR(1,i)  = phiR(:,t-1)'  * keqing; % R
+       CGpredictedW(1,i)  = phiW(:,t-1)'  * keqing; % Wage
+       CGpredictedPi(1,i) = phiPi(:,t-1)' * keqing; % Inflation
+       CGpredictedT(1,i)  = phiT(:,t-1)'  * keqing; % Transfers
+           
+       end
+       
+
+       
+    
+       
+       % calculate predictions j steps ahead
+       
+
+       
        % create zMatrix for computing predictions
        
        zMatPred = [ 1 CGpredictedK(1,t-1) A_hat(1,t-1) ]';
        
        
-       for i = 2:forecastPeriod
-           
-            RPrediction(1,i)  = phiR(:,t)'  * zMatPred;
-            wPrediction(1,i)  = phiW(:,t)'  * zMatPred;
-            PiPrediction(1,i) = phiPi(:,t)' * zMatPred;
-            TPrediction(1,i)  = phiT(:,t)'  * zMatPred;
-            KPrediction(1,i)  = phiK(:,t)'  * zMatPred;
-            
-            zMatPred = [ 1 RPrediction(1,i-1) A_hat(1,t+i-1) ]';
-            
-       end
+
        
        
        % now compute big sums with those i steps ahead forecasts from above
@@ -216,31 +191,28 @@ for t = 2:timePeriod
        for i = 1:forecastPeriod
           % is this correct? Let's see...
           
-          G_C_R_Sum(1,i)  = G_C(1,forecastPeriod) * sum(RPrediction(1,1:i));
-          G_C_Pi_Sum(1,i) = G_C(1,forecastPeriod) * sum(PiPrediction(1,1:i));
-          G_W_W_Sum(1,i)  = G_w(1,i) * sum(wPrediction(1,1:i));
-          G_A_A_Sum(1,i)  = G_A(1,i) * A_hat(1,t+i);
-          G_K_Sum(1,i)    = G_k(1,i) * sum(KPrediction(1,1:i));
-          G_T_Sum(1,i)    = G_T(1,i) * sum(TPrediction(1,1:i));
+          G_C_R_Sum(1,i)  = G_C(1,i) * sum(RPrediction(1,1:i));
+          G_C_Pi_Sum(1,i) = G_C(1,i) * sum(PiPrediction(1,1:i));
+          G_W_W_Sum(1,i)  = G_w(1,i) * wPrediction(1,i);
+          G_A_A_Sum(1,i)  = G_A(1,i) * A_hat_predicted(1,i);
+          G_K_Sum(1,i)    = G_k(1,i) * KPrediction(1,i);
+          G_T_Sum(1,i)    = G_T(1,i) * TPrediction(1,i);
           
-          Big_Sum_Pi(1,i) = BigLambda *( ((1/Rst)^i)*sum(PiPrediction(1,1:i)) );
-          Big_Sum_R(1,i)  = BigLambda *( ((1/Rst)^i)*sum(RPrediction(1,1:i)) );
+          Big_Sum_Pi(1,i) = BigLambda * ((1/Rst)^i/(1-(1/Rst)))*PiPrediction(1,i);
+          Big_Sum_R(1,i)  = BigLambda * ((1/Rst)^i/(1-(1/Rst)))*RPrediction(1,i) ;
           
-          Sum_2_Pi(1,i)   = G_X(1,i) * (PiPrediction(1,t) - allVariables(9,t-1));
+          Sum_2_Pi(1,i)   = G_X(1,i) * (beta*PiPrediction(1,t) - PiPrediction(1,t-1));
           
        end
        
-       % capital
-       
-       allVariables(2,t) = (1-delta)*allVariables(2,t-1) + allVariables(4,t-1);
-       
+      
        % inflation, Phillips curve
       
        allVariables(11,t) = (1/beta)*(allVariables(11,t-1)+(1/theta)*((1-theta*beta)*(1-theta))*allVariables(12,t-1));
        
        % consumption
-       allVariables(5,t) = (-1/(C_0+G_C(1,forecastPeriod))) * (C_w*CGpredictedW(1,t-1) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*CGpredictedPi(1,t-1)-allVariables(11,t)) + ...
-                           C_A*A_hat(1,t) + C_k *allVariables(2,t) + Tst*CGpredictedT(1,t-1) + Rst*kst*(CGpredictedR(1,t-1)+allVariables(2,t-1)-allVariables(9,t-1)) + ...
+       allVariables(5,t) = (-1/(C_0+sum(G_C))) * (C_w*wPrediction(1,t-1) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*PiPrediction(1,t)-PiPrediction(1,t-1)) + ...
+                           C_A*A_hat(1,t) + C_k *allVariables(2,t) + Tst*CGpredictedT(1,t-1) + Rst*kst*(CGpredictedR(1,t-1)+allVariables(2,t-1)-CGpredictedPi(1,t-1)) + ...
                            sum(Big_Sum_Pi) - sum(Big_Sum_R) + sum(G_C_R_Sum) - sum(G_C_Pi_Sum) + sum(G_W_W_Sum) + (theta/((1-theta*beta)*(1-theta)))*sum(Sum_2_Pi) +...
                            sum(G_A_A_Sum) + sum(G_K_Sum) + sum(G_T_Sum));
       
@@ -282,52 +254,90 @@ for t = 2:timePeriod
       
       allVariables(10,t) = (cst*allVariables(5,t) + kst*allVariables(2,t) - wst*Lst*allVariables(7,t) - wst*Lst*allVariables(1,t)-Rst*kst*allVariables(8,t) - Rst*kst*allVariables(2,t) + ...
                             Rst*kst*allVariables(11,t) - profit_st*allVariables(8,t))/Tst;
+       
+                
+        zMat  = [ 1 allVariables(2,t) A_hat(1,t) ]';               
                         
-    else
-        
-        
-       zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]'; % this is capital and productivity shock at T-1
-       D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
-        
-       phiR(:,t)  = phiR(:,t-1)  + gainParam * D_New \ zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning
+        D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
+       
+       phiR(:,t)  = phiR(:,t-1)  + gainParam * D_New \ zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning 
        phiW(:,t)  = phiW(:,t-1)  + gainParam * D_New \ zMat * (allVariables(7,t)  - phiW(:,t-1)'  * zMat);
        phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
        phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
        phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
        
-       CGpredictedR(1,t-1)  = phiR(:,t)'  * zMat; % R
-       CGpredictedW(1,t-1)  = phiW(:,t)'  * zMat; % Wage
-       CGpredictedPi(1,t-1) = phiPi(:,t)' * zMat; % Inflation
-       CGpredictedT(1,t-1)  = phiT(:,t)'  * zMat; % Transfers
-       CGpredictedK(1,t-1)  = phiK(:,t)'  * zMat; % Capital
+       % LEARNING ALOG, END                  
+                        
+                        
+    else
+      
+        
+         % update capital
+       
+       allVariables(2,t) = (1-delta)*allVariables(2,t-1) + allVariables(4,t-1);
+       
+       A_hat_predicted(1,t-1) = rho*A_hat(1,t-1);
+       
+       % LEARNING ALGO, BEGIN
+       
+       keqing  = [ 1 allVariables(2,t) A_hat_predicted(1,t-1) ]'; % this is capital and productivity shock at T-1
+     
+       
+       % calculate predictions based on estimates for one period ahead
+       
+       CGpredictedR(1,t-1)  = phiR(:,t-1)'  * keqing; % R
+       CGpredictedW(1,t-1)  = phiW(:,t-1)'  * keqing; % Wage
+       CGpredictedPi(1,t-1) = phiPi(:,t-1)' * keqing; % Inflation
+       CGpredictedT(1,t-1)  = phiT(:,t-1)'  * keqing; % Transfers
+       
+       %next period
+       
+              % initialize predictions
        
        RPrediction  = zeros(1,forecastPeriod);
        wPrediction  = zeros(1,forecastPeriod);
        PiPrediction = zeros(1,forecastPeriod);
        TPrediction  = zeros(1,forecastPeriod);
        KPrediction  = zeros(1,forecastPeriod);
-       
+    
        RPrediction(1,1)  = CGpredictedR(1,t-1);
        wPrediction(1,1)  = CGpredictedW(1,t-1);
        PiPrediction(1,1) = CGpredictedPi(1,t-1);
        TPrediction(1,1)  = CGpredictedT(1,t-1);
        KPrediction(1,1)  = CGpredictedK(1,t-1);
        
-       zMatPred = [ 1 CGpredictedK(1,t-1) A_hat(1,t-1) ]';
-       
-       clear i
-       
        for i = 2:forecastPeriod
            
-            RPrediction(1,i)  = phiR(:,t)'  * zMatPred;
-            wPrediction(1,i)  = phiW(:,t)'  * zMatPred;
-            PiPrediction(1,i) = phiPi(:,t)' * zMatPred;
-            TPrediction(1,i)  = phiT(:,t)'  * zMatPred;
-            KPrediction(1,i)  = phiK(:,t)'  * zMatPred;
-            
-            zMatPred = [ 1 RPrediction(1,i-1) A_hat(1,t+i-1) ]';
-            
+       KPrediction(1,i)  = phiK(:,t-1)'  * keqing; % Capital
+       
+       A_hat_predicted(1,i) = rho*A_hat_predicted(1,i-1);
+       
+       keqing  = [ 1 KPrediction(1,i) A_hat_predicted(1,i) ]'; 
+       
+       CGpredictedR(1,i)  = phiR(:,t-1)'  * keqing; % R
+       CGpredictedW(1,i)  = phiW(:,t-1)'  * keqing; % Wage
+       CGpredictedPi(1,i) = phiPi(:,t-1)' * keqing; % Inflation
+       CGpredictedT(1,i)  = phiT(:,t-1)'  * keqing; % Transfers
+           
        end
+       
+
+       
+    
+       
+       % calculate predictions j steps ahead
+       
+
+       
+       % create zMatrix for computing predictions
+       
+       zMatPred = [ 1 CGpredictedK(1,t-1) A_hat(1,t-1) ]';
+       
+       
+
+       
+       
+       % now compute big sums with those i steps ahead forecasts from above
        
        R_Pi_Sum   = zeros(1,forecastPeriod);
        R_R_Sum    = zeros(1,forecastPeriod);
@@ -342,37 +352,31 @@ for t = 2:timePeriod
        Big_Sum_R  = zeros(1,forecastPeriod);
        Sum_2_Pi   = zeros(1,forecastPeriod);
        
-       clear i
-       
        for i = 1:forecastPeriod
-           
           % is this correct? Let's see...
           
-          G_C_R_Sum(1,i)  = G_C(1,forecastPeriod) * sum(RPrediction(1,1:i));
-          G_C_Pi_Sum(1,i) = G_C(1,forecastPeriod) * sum(PiPrediction(1,1:i));
-          G_W_W_Sum(1,i)  = G_w(1,i) * sum(wPrediction(1,1:i));
-          G_A_A_Sum(1,i)  = G_A(1,i) * A_hat(1,t+i);
-          G_K_Sum(1,i)    = G_k(1,i) * sum(KPrediction(1,1:i));
-          G_T_Sum(1,i)    = G_T(1,i) * sum(TPrediction(1,1:i));
+          G_C_R_Sum(1,i)  = G_C(1,i) * sum(RPrediction(1,1:i));
+          G_C_Pi_Sum(1,i) = G_C(1,i) * sum(PiPrediction(1,1:i));
+          G_W_W_Sum(1,i)  = G_w(1,i) * wPrediction(1,i);
+          G_A_A_Sum(1,i)  = G_A(1,i) * A_hat_predicted(1,i);
+          G_K_Sum(1,i)    = G_k(1,i) * KPrediction(1,i);
+          G_T_Sum(1,i)    = G_T(1,i) * TPrediction(1,i);
           
-          Big_Sum_Pi(1,i) = BigLambda *( ((1/Rst)^i)*sum(PiPrediction(1,1:i)) );
-          Big_Sum_R(1,i)  = BigLambda *( ((1/Rst)^i)*sum(RPrediction(1,1:i)) );
+          Big_Sum_Pi(1,i) = BigLambda * ((1/Rst)^i/(1-(1/Rst)))*PiPrediction(1,i);
+          Big_Sum_R(1,i)  = BigLambda * ((1/Rst)^i/(1-(1/Rst)))*RPrediction(1,i) ;
           
-          Sum_2_Pi(1,i)   = G_X(1,i) * (PiPrediction(1,t) - allVariables(9,t-1));
+          Sum_2_Pi(1,i)   = G_X(1,i) * (beta*PiPrediction(1,t) - PiPrediction(1,t-1));
           
        end
        
-        % capital
-       
-       allVariables(2,t) = (1-delta)*allVariables(2,t-1) + allVariables(4,t-1);
-       
+      
        % inflation, Phillips curve
       
        allVariables(11,t) = (1/beta)*(allVariables(11,t-1)+(1/theta)*((1-theta*beta)*(1-theta))*allVariables(12,t-1));
        
        % consumption
-       allVariables(5,t) = (-1/(C_0+G_C(1,forecastPeriod))) * (C_w*CGpredictedW(1,t-1) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*CGpredictedPi(1,t-1)-allVariables(11,t)) + ...
-                           C_A*A_hat(1,t) + C_k *allVariables(2,t) + Tst*CGpredictedT(1,t-1) + Rst*kst*(CGpredictedR(1,t-1)+allVariables(2,t-1)-allVariables(9,t-1)) + ...
+       allVariables(5,t) = (-1/(C_0+sum(G_C))) * (C_w*wPrediction(1,t-1) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*PiPrediction(1,t)-PiPrediction(1,t-1)) + ...
+                           C_A*A_hat(1,t) + C_k *allVariables(2,t) + Tst*CGpredictedT(1,t-1) + Rst*kst*(CGpredictedR(1,t-1)+allVariables(2,t-1)-CGpredictedPi(1,t-1)) + ...
                            sum(Big_Sum_Pi) - sum(Big_Sum_R) + sum(G_C_R_Sum) - sum(G_C_Pi_Sum) + sum(G_W_W_Sum) + (theta/((1-theta*beta)*(1-theta)))*sum(Sum_2_Pi) +...
                            sum(G_A_A_Sum) + sum(G_K_Sum) + sum(G_T_Sum));
       
@@ -415,8 +419,25 @@ for t = 2:timePeriod
       allVariables(10,t) = (cst*allVariables(5,t) + kst*allVariables(2,t) - wst*Lst*allVariables(7,t) - wst*Lst*allVariables(1,t)-Rst*kst*allVariables(8,t) - Rst*kst*allVariables(2,t) + ...
                             Rst*kst*allVariables(11,t) - profit_st*allVariables(8,t))/Tst;
        
+                
+        zMat  = [ 1 allVariables(2,t) A_hat(1,t) ]';               
+                        
+        D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
        
+       phiR(:,t)  = phiR(:,t-1)  + gainParam * D_New \ zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning 
+       phiW(:,t)  = phiW(:,t-1)  + gainParam * D_New \ zMat * (allVariables(7,t)  - phiW(:,t-1)'  * zMat);
+       phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
+       phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
+       phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
+       
+       % LEARNING ALOG, END                  
+             
+      
+                        
     end
+                        
+    
+    
     
     
 end
