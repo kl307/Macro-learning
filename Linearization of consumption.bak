@@ -1,0 +1,324 @@
+%2multibyte Version: 5.50.0.2960 CodePage: 1252
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2960}
+%TCIDATA{Codepage=1252}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, October 14, 2015 17:31:17}
+%TCIDATA{LastRevised=Saturday, October 17, 2015 14:52:07}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+\begin{document}
+
+
+We have consumption function as%
+\[
+\Lambda _{t}+\sum_{j=1}^{\infty }\left( \dprod\limits_{i=1}^{j}\frac{\pi
+_{t+i}}{R_{t+i}}\right) \Lambda _{t+j}+\frac{R_{t}}{\pi _{t}}d_{t-1}=0, 
+\]
+
+where%
+\[
+\Lambda _{t+j}=w_{t+j}^{\frac{\eta }{\eta -1}}c_{t+j}^{-\frac{1}{\eta -1}%
+}+\left( 1-\frac{1}{X_{t+j}}\right) A_{t+j}k_{t+j}^{\alpha }w_{t+j}^{\frac{%
+1-\alpha }{\eta -1}}c_{t+j}^{-\frac{1-\alpha }{\eta -1}}-c_{t+j}+T_{t+j}. 
+\]
+
+So we have%
+\[
+\Lambda _{t}+\frac{\pi _{t+1}}{R_{t+1}}\Lambda _{t+1}+...+\left(
+\dprod\limits_{i=1}^{n}\frac{\pi _{t+i}}{R_{t+i}}\right) \Lambda _{t+j}+%
+\frac{R_{t}}{\pi _{t}}d_{t-1}=0. 
+\]
+
+\begin{eqnarray*}
+&&\Lambda \widehat{\Lambda }_{t}+\frac{\Lambda }{R}\left[ \widehat{\pi }%
+_{t+1}+\widehat{\Lambda }_{t+1}-\widehat{R}_{t+1}\right] +\frac{\Lambda }{%
+R^{2}}\left[ \widehat{\pi }_{t+1}+\widehat{\pi }_{t+2}+\widehat{\Lambda }%
+_{t+1}+\widehat{\Lambda }_{t+2}-\widehat{R}_{t+1}-\widehat{R}_{t+2}\right]
++... \\
+&&\frac{\Lambda }{R^{3}}\left[ \widehat{\pi }_{t+1}+\widehat{\pi }_{t+2}+%
+\widehat{\pi }_{t+3}+\widehat{\Lambda }_{t+1}+\widehat{\Lambda }_{t+2}+%
+\widehat{\Lambda }_{t+3}-\widehat{R}_{t+1}-\widehat{R}_{t+2}-\widehat{R}%
+_{t+3}\right] +... \\
+&&\frac{\Lambda }{R^{j}}\left[ \widehat{\pi }_{t+1}+\widehat{\Lambda }_{t+1}-%
+\widehat{R}_{t+1}+\widehat{\pi }_{t+2}+\widehat{\Lambda }_{t+2}-\widehat{R}%
+_{t+2}+...+\widehat{\pi }_{t+j}+\widehat{\Lambda }_{t+j}-\widehat{R}_{t+j}%
+\right] +... \\
+&&+Rd\left[ \widehat{R}_{t}+\widehat{d}_{t-1}-\widehat{\pi }_{t}\right] \\
+&=&0
+\end{eqnarray*}
+
+After simplification, we have%
+\begin{eqnarray*}
+&&\Lambda \widehat{\Lambda }_{t}+\Lambda \left[ \left[ \sum_{i=1}^{\infty
+}\left( \frac{1}{R}\right) ^{i}\right] \widehat{\Lambda }_{t+1}+\left[
+\sum_{i=2}^{\infty }\left( \frac{1}{R}\right) ^{i}\right] \widehat{\Lambda }%
+_{t+2}+...+\left[ \sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}\right] 
+\widehat{\Lambda }_{t+j}+...\right] \\
+&&+\Lambda \left[ \left[ \sum_{i=1}^{\infty }\left( \frac{1}{R}\right) ^{i}%
+\right] \widehat{\pi }_{t+1}+\left[ \sum_{i=2}^{\infty }\left( \frac{1}{R}%
+\right) ^{i}\right] \widehat{\pi }_{t+2}+...+\left[ \sum_{i=j}^{\infty
+}\left( \frac{1}{R}\right) ^{i}\right] \widehat{\pi }_{t+j}+...\right] \\
+&&-\Lambda \left[ \left[ \sum_{i=1}^{\infty }\left( \frac{1}{R}\right) ^{i}%
+\right] \widehat{R}_{t+1}+\left[ \sum_{i=2}^{\infty }\left( \frac{1}{R}%
+\right) ^{i}\right] \widehat{R}_{t+2}+...+\left[ \sum_{i=j}^{\infty }\left( 
+\frac{1}{R}\right) ^{i}\right] \widehat{R}_{t+j}+...\right] \\
+&&+Rd\left[ \widehat{R}_{t}+\widehat{d}_{t-1}-\widehat{\pi }_{t}\right] \\
+&=&0
+\end{eqnarray*}
+
+Further%
+\[
+\Lambda \widehat{\Lambda }_{t}+\Lambda \sum_{j=1}^{\infty }\left[
+\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}\widehat{\Lambda }_{t+j}%
+\right] +\Lambda \sum_{j=1}^{\infty }\left[ \sum_{i=j}^{\infty }\left( \frac{%
+1}{R}\right) ^{i}\widehat{\pi }_{t+j}\right] -\Lambda \sum_{j=1}^{\infty }%
+\left[ \sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}\widehat{R}_{t+j}%
+\right] +Rd\left[ \widehat{R}_{t}+\widehat{d}_{t-1}-\widehat{\pi }_{t}\right]
+=0 
+\]
+
+Now we derive $\widehat{\Lambda }_{t+j}$.
+
+\[
+\Lambda \widehat{\Lambda }_{t+j}=C_{w}\widehat{w}_{t+j}+C_{0}\widehat{c}%
+_{t+j}+C_{X}\widehat{X}_{t+j}+C_{A}\widehat{A}_{t+j}+C_{k}\widehat{k}_{t+j}+T%
+\widehat{T}_{t+j}, 
+\]
+
+where%
+\[
+C_{w}=\left[ \frac{\eta }{\eta -1}w^{\frac{1}{\eta -1}}c^{-\frac{1}{\eta -1}%
+}+\frac{1-\alpha }{\eta -1}\left( 1-\frac{1}{X}\right) k^{\alpha }c^{-\frac{%
+1-\alpha }{\eta -1}}w^{\frac{1-\alpha }{\eta -1}-1}\right] w 
+\]%
+\[
+C_{0}=\left[ -\frac{1}{\eta -1}w^{\frac{\eta }{\eta -1}}c^{-\frac{\eta }{%
+\eta -1}}-\frac{1-\alpha }{\eta -1}\left( 1-\frac{1}{X}\right) k^{\alpha }w^{%
+\frac{1-\alpha }{\eta -1}}c^{-\frac{1-\alpha }{\eta -1}-1}-1\right] c 
+\]%
+\[
+C_{X}=k^{\alpha }w^{\frac{1-\alpha }{\eta -1}}c^{-\frac{1-\alpha }{\eta -1}}%
+\frac{1}{X} 
+\]%
+\[
+C_{A}=\left( 1-\frac{1}{X}\right) k^{\alpha }w^{\frac{1-\alpha }{\eta -1}%
+}c^{-\frac{1-\alpha }{\eta -1}} 
+\]%
+\[
+C_{k}=\alpha \left( 1-\frac{1}{X}\right) k^{\alpha -1}w^{\frac{1-\alpha }{%
+\eta -1}}c^{-\frac{1-\alpha }{\eta -1}} 
+\]
+
+So it further becomes%
+\begin{eqnarray*}
+&&C_{w}\widehat{w}_{t}+C_{0}\widehat{c}_{t}+C_{X}\widehat{X}_{t}+C_{A}%
+\widehat{A}_{t}+C_{k}\widehat{k}_{t}+T\widehat{T}_{t} \\
+&&\sum_{j=1}^{\infty }\left[ \sum_{i=j}^{\infty }\left( \frac{1}{R}\right)
+^{i}\left( C_{w}\widehat{w}_{t+j}+C_{0}\widehat{c}_{t+j}+C_{X}\widehat{X}%
+_{t+j}+C_{A}\widehat{A}_{t+j}+C_{k}\widehat{k}_{t+j}+T\widehat{T}%
+_{t+j}\right) \right] \\
+&&+\Lambda \sum_{j=1}^{\infty }\left[ \sum_{i=j}^{\infty }\left( \frac{1}{R}%
+\right) ^{i}\widehat{\pi }_{t+j}\right] -\Lambda \sum_{j=1}^{\infty }\left[
+\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}\widehat{R}_{t+j}\right]
++Rd\left[ \widehat{R}_{t}+\widehat{d}_{t-1}-\widehat{\pi }_{t}\right] \\
+&=&0
+\end{eqnarray*}%
+\begin{eqnarray*}
+&&C_{w}\widehat{w}_{t}+C_{0}\widehat{c}_{t}+C_{X}\widehat{X}_{t}+C_{A}%
+\widehat{A}_{t}+C_{k}\widehat{k}_{t}+T\widehat{T}_{t} \\
+&&+Rd\left[ \widehat{R}_{t}+\widehat{d}_{t-1}-\widehat{\pi }_{t}\right]
++\Lambda \sum_{j=1}^{\infty }\left[ \sum_{i=j}^{\infty }\left( \frac{1}{R}%
+\right) ^{i}\widehat{\pi }_{t+j}\right] --\Lambda \sum_{j=1}^{\infty }\left[
+\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}\widehat{R}_{t+j}\right] \\
+&&\sum_{j=1}^{\infty }G_{cj}\widehat{c}_{t+j}+\sum_{j=1}^{\infty }G_{wj}%
+\widehat{w}_{t+j}+\sum_{j=1}^{\infty }G_{Xj}\widehat{X}_{t+j}+\sum_{j=1}^{%
+\infty }G_{Aj}\widehat{A}_{t+j}+\sum_{j=1}^{\infty }G_{kj}\widehat{k}%
+_{t+j}+\sum_{j=1}^{\infty }G_{Tj}\widehat{T}_{t+j} \\
+&=&0
+\end{eqnarray*}%
+\[
+G_{cj}=\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}C_{0} 
+\]%
+\[
+G_{wj}=\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}C_{w} 
+\]%
+\[
+G_{Xj}=\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}C_{X} 
+\]%
+\[
+G_{Aj}=\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}C_{A} 
+\]%
+\[
+G_{kj}=\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}C_{k} 
+\]%
+\[
+G_{Tj}=\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}T 
+\]
+
+Using Phillips curve%
+\[
+\frac{\theta }{\left( 1-\theta \beta \right) \left( 1-\theta \right) }\left[
+\beta \widehat{\pi }_{t+1}-\widehat{\pi }_{t}\right] =\widehat{X}_{t}. 
+\]
+
+and linearized Euler equation%
+\[
+\widehat{c}_{t+j}=\widehat{c}_{t}+\dsum\limits_{i=1}^{j}\widehat{R}%
+_{t+i}-\dsum\limits_{i=1}^{j}\widehat{\pi }_{t+i}. 
+\]
+
+We finally have%
+\begin{eqnarray*}
+&&C_{w}\widehat{w}_{t}+C_{0}\widehat{c}_{t}+\frac{\theta }{\left( 1-\theta
+\beta \right) \left( 1-\theta \right) }C_{X}\left[ \beta \widehat{\pi }%
+_{t+1}-\widehat{\pi }_{t}\right] +C_{A}\widehat{A}_{t}+C_{k}\widehat{k}_{t}+T%
+\widehat{T}_{t}... \\
+&&+Rd\left[ \widehat{R}_{t}+\widehat{d}_{t-1}-\widehat{\pi }_{t}\right]
++\Lambda \sum_{j=1}^{\infty }\left[ \sum_{i=j}^{\infty }\left( \frac{1}{R}%
+\right) ^{i}\widehat{\pi }_{t+j}\right] --\Lambda \sum_{j=1}^{\infty }\left[
+\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}\widehat{R}_{t+j}\right]
+... \\
+&&\sum_{j=1}^{\infty }G_{cj}\widehat{c}_{t}+\sum_{j=1}^{\infty
+}G_{cj}\dsum\limits_{i=1}^{j}\widehat{R}_{t+i}-\sum_{j=1}^{\infty
+}G_{cj}\dsum\limits_{i=1}^{j}\widehat{\pi }_{t+i}+\sum_{j=1}^{\infty }G_{wj}%
+\widehat{w}_{t+j}... \\
+&&+\frac{\theta }{\left( 1-\theta \beta \right) \left( 1-\theta \right) }%
+\sum_{j=1}^{\infty }G_{Xj}\left[ \beta \widehat{\pi }_{t+1}-\widehat{\pi }%
+_{t}\right] +\sum_{j=1}^{\infty }G_{Aj}\widehat{A}_{t+j}+\sum_{j=1}^{\infty
+}G_{kj}\widehat{k}_{t+j}+\sum_{j=1}^{\infty }G_{Tj}\widehat{T}_{t+j} \\
+&=&0
+\end{eqnarray*}
+
+So we get consumption as a function of the other.%
+\begin{eqnarray*}
+-\left[ C_{0}+\sum_{j=1}^{\infty }G_{cj}\right] \widehat{c}_{t} &=&C_{w}%
+\widehat{w}_{t}+\frac{\theta }{\left( 1-\theta \beta \right) \left( 1-\theta
+\right) }C_{X}\left[ \beta \widehat{\pi }_{t+1}-\widehat{\pi }_{t}\right]
++C_{A}\widehat{A}_{t}+C_{k}\widehat{k}_{t}+T\widehat{T}_{t}... \\
+&&+Rd\left[ \widehat{R}_{t}+\widehat{d}_{t-1}-\widehat{\pi }_{t}\right]
++\Lambda \sum_{j=1}^{\infty }\left[ \sum_{i=j}^{\infty }\left( \frac{1}{R}%
+\right) ^{i}\widehat{\pi }_{t+j}\right] -\Lambda \sum_{j=1}^{\infty }\left[
+\sum_{i=j}^{\infty }\left( \frac{1}{R}\right) ^{i}\widehat{R}_{t+j}\right]
+... \\
+&&+\sum_{j=1}^{\infty }G_{cj}\dsum\limits_{i=1}^{j}\widehat{R}%
+_{t+i}-\sum_{j=1}^{\infty }G_{cj}\dsum\limits_{i=1}^{j}\widehat{\pi }%
+_{t+i}+\sum_{j=1}^{\infty }G_{wj}\widehat{w}_{t+j}+\frac{\theta }{\left(
+1-\theta \beta \right) \left( 1-\theta \right) }\sum_{j=1}^{\infty }G_{Xj}%
+\left[ \beta \widehat{\pi }_{t+1}-\widehat{\pi }_{t}\right] ... \\
+&&+\sum_{j=1}^{\infty }G_{Aj}\widehat{A}_{t+j}+\sum_{j=1}^{\infty }G_{kj}%
+\widehat{k}_{t+j}+\sum_{j=1}^{\infty }G_{Tj}\widehat{T}_{t+j}
+\end{eqnarray*}
+
+\bigskip
+
+Learning algorithm
+
+We use constant gain to update ophirecasts of $R_{t+i},w_{t+i}$ and $\pi
+_{t+i}$, $T_{t+i}$ in the following way
+
+\begin{eqnarray}
+R_{t+1} &=&\alpha _{R}+\alpha _{Rk}k_{t}+\alpha _{RA}\widehat{A}_{t}+noise,
+\label{predictions} \\
+w_{t+1} &=&\alpha _{w}+\alpha _{wk}k_{t}+\alpha _{wA}\widehat{A}_{t}+noise, 
+\nonumber \\
+\pi _{t+1} &=&\alpha _{\pi }+\alpha _{\pi k}k_{t}+\alpha _{\pi A}\widehat{A}%
+_{t}+noise,  \nonumber \\
+T_{t+1}^{\prime } &=&\alpha _{T}+\alpha _{wT}k_{t}+\alpha _{wT}\widehat{A}%
+_{t}+noise,  \nonumber \\
+\widehat{A}_{t} &=&\rho \widehat{A}_{t-1}+e_{t}.  \nonumber
+\end{eqnarray}
+So when households get the forecasts of $\pi _{t+1}$, $R_{t+1}$, $w_{t+1}$
+and $T_{t}^{\prime }$ they can choose their consumption according to
+consumption equation.
+
+If we do it with constant gain learning, the initial value is at the steady
+state at the REE. The second moment of variables can be derived from RE
+case, too. More details are in Appendix in Mitra's paper.
+
+The coefficients used for forecasting are updated according to the constant
+gain algorithm. For each prediction in (\ref{predictions}) block we write
+the following updating rule%
+\begin{eqnarray}
+\phi _{R,t} &=&\phi _{R,t-1}+\Phi D_{t}^{-1}z_{t-1}\left( R_{t}-\phi
+_{R,t-1}^{\prime }z_{t-1}\right) , \\
+\phi _{w,t} &=&\phi _{w,t-1}+\Phi D_{t}^{-1}z_{t-1}\left( w_{t}-\phi
+_{w,t-1}^{\prime }z_{t-1}\right) ,  \nonumber \\
+\phi _{\pi ,t} &=&\phi _{\pi ,t-1}+\Phi D_{t}^{-1}z_{t-1}\left( \pi
+_{t}-\phi _{\pi ,t-1}^{\prime }z_{t-1}\right) ,  \nonumber \\
+\phi _{T,t} &=&\phi _{T,t-1}+\Phi D_{t}^{-1}z_{t-1}\left( T_{t}-\phi
+_{T,t-1}^{\prime }z_{t-1}\right) ,  \nonumber \\
+\phi _{k,t} &=&\phi _{k,t-1}+\Phi D_{t}^{-1}z_{t-1}\left( k_{t}-\phi
+_{k,t-1}^{\prime }z_{t-1}\right) ,
+\end{eqnarray}%
+where $\phi _{R,t}=\left[ 
+\begin{array}{c}
+\alpha _{R,t} \\ 
+\alpha _{Rk,t} \\ 
+\alpha _{RA,t}%
+\end{array}%
+\right] ,$ $\phi _{w,t}=\left[ 
+\begin{array}{c}
+\alpha _{w,t} \\ 
+\alpha _{wk,t} \\ 
+\alpha _{wA,t}%
+\end{array}%
+\right] ,$ $\phi _{\pi ,t}=\left[ 
+\begin{array}{c}
+\alpha _{\pi ,t} \\ 
+\alpha _{\pi k,t} \\ 
+\alpha _{\pi A,t}%
+\end{array}%
+\right] ,$ $\phi _{T,t}=\left[ 
+\begin{array}{c}
+\alpha _{T,t} \\ 
+\alpha _{T,t} \\ 
+\alpha _{TA,t}%
+\end{array}%
+\right] ,$ $\phi _{k,t}=\left[ 
+\begin{array}{c}
+\alpha _{k,t} \\ 
+\alpha _{k,t} \\ 
+\alpha _{kA,t}%
+\end{array}%
+\right] ,$ $z_{t}=\left[ 
+\begin{array}{c}
+1 \\ 
+k_{t} \\ 
+\widehat{A}_{t}%
+\end{array}%
+\right] $ and matrix of second moments $D_{t}$ is updated according to%
+\begin{equation}
+D_{t}=D_{t-1}+\Phi \left( z_{t-1}z_{t-1}^{\prime }-D_{t-1}\right) .
+\end{equation}
+
+\end{document}

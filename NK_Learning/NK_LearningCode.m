@@ -25,7 +25,7 @@ A_hat(1,1)      = 0.01*randn; % initialize A_hat at 1
 
 for j = 2:timePeriod+forecastPeriod
    
-    A_hat(1,j) = rho*A_hat(1,j-1) + 0.01*randn;
+    A_hat(1,j) = rho*A_hat(1,j-1) + 0.005*randn;
     
 end
 
@@ -95,18 +95,18 @@ for t = 2:timePeriod
        
        % initialize at steady state
         
-       allVariables(1,t-1)  = Lst;
-       allVariables(2,t-1)  = kst;
-       allVariables(3,t-1)  = Yst;
-       allVariables(4,t-1)  = Invst;
-       allVariables(5,t-1)  = cst;
-       allVariables(6,t-1)  = rKst;
-       allVariables(7,t-1)  = wst;
-       allVariables(8,t-1)  = Rst;
-       allVariables(9,t-1)  = profit_st;
-       allVariables(10,t-1) = Tst;
-       allVariables(11,t-1) = 1; % this is inflation
-       allVariables(12,t-1) = Xst;
+       allVariables(1,t-1)  = 0;
+       allVariables(2,t-1)  = 0;
+       allVariables(3,t-1)  = 0;
+       allVariables(4,t-1)  = 0;
+       allVariables(5,t-1)  = 0;
+       allVariables(6,t-1)  = 0;
+       allVariables(7,t-1)  = 0;
+       allVariables(8,t-1)  = 0;
+       allVariables(9,t-1)  = 0;
+       allVariables(10,t-1) = 0;
+       allVariables(11,t-1) = 0; % this is inflation
+       allVariables(12,t-1) = 0;
        
        % update capital
        
@@ -220,7 +220,7 @@ for t = 2:timePeriod
        
       % labour
       
-      allVariables(1,t) = LsCoef*((1/beta)*(alphaPi*allVariables(11,t)+alphaY*(A_hat(1,t) + alpha*CGpredictedK(1,t-1))) - allVariables(11,t) - ((1/beta) - 1 - delta)*allVariables(5,t));
+      allVariables(1,t) = LsCoef*((1/beta)*(alphaPi*allVariables(11,t)+alphaY*(A_hat(1,t) + alpha*allVariables(2,t-1))) - allVariables(11,t) - ((1/beta) - 1 - delta)*allVariables(5,t));
       
       % output
       
@@ -256,7 +256,7 @@ for t = 2:timePeriod
                             Rst*kst*allVariables(11,t) - profit_st*allVariables(8,t))/Tst;
        
                 
-        zMat  = [ 1 allVariables(2,t) A_hat(1,t) ]';               
+        zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]';               
                         
         D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
        
@@ -265,6 +265,8 @@ for t = 2:timePeriod
        phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
        phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
        phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
+       
+       D_Old= D_New;
        
        % LEARNING ALOG, END                  
                         
@@ -420,7 +422,7 @@ for t = 2:timePeriod
                             Rst*kst*allVariables(11,t) - profit_st*allVariables(8,t))/Tst;
        
                 
-        zMat  = [ 1 allVariables(2,t) A_hat(1,t) ]';               
+        zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]';               
                         
         D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
        
@@ -429,6 +431,8 @@ for t = 2:timePeriod
        phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
        phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
        phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
+       
+       D_Old= D_New;
        
        % LEARNING ALOG, END                  
              
