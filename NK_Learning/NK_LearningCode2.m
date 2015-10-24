@@ -21,7 +21,7 @@ CGpredictedK    = zeros(1,timePeriod);
 
 A_hat           = zeros(1,timePeriod+forecastPeriod);
 A_hat_predicted = zeros(1,timePeriod+forecastPeriod);
-A_zhat(1,1)      = 0.01*randn; % initialize A_hat at 1
+A_hat(1,1)      = 0.01*randn; % initialize A_hat at 1
 
 for j = 2:timePeriod+forecastPeriod
    
@@ -76,11 +76,11 @@ phiK  = zeros(3,timePeriod);
 
 % now initialize coefs as small random numbers
 
-phiR(:,1)  = 0.01*randn(3,1);
-phiW(:,1)  = 0.01*randn(3,1);
-phiPi(:,1) = 0.01*randn(3,1);
-phiT(:,1)  = 0.01*randn(3,1);
-phiK(:,1)  = 0.01*randn(3,1);
+phiR(:,1)  = 0.1*randn(3,1);
+phiW(:,1)  = 0.1*randn(3,1);
+phiPi(:,1) = 0.1*randn(3,1);
+phiT(:,1)  = 0.1*randn(3,1);
+phiK(:,1)  = 0.1*randn(3,1);
 D_Old      = eye(3); % initialize D as an identity matrix (meaning there are no cors between variables
 
 % compute Lst coefficient
