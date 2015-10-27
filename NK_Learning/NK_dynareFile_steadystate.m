@@ -3,7 +3,7 @@ function [ys,check]=NK_dynareFile_steadystate(ys,exe)
 
 global M_ lgy_
 
-global Lst kst Yst Invst cst rKst wst Rst
+global Lst kst Yst Invst cst rKst wst Rst Tst profit_st
 
 global eta beta epsilon alpha delta Xst theta rho
 
@@ -45,32 +45,28 @@ rKst   = (1/beta) - 1 + delta;
 wst    = (1/Xst)*(1-alpha)*(kst^alpha)*(Lst^alpha);
 Rst    = 1/beta;
 
+profit_st = (1-(1/Xst))*Yst;
+Tst       = cst+kst-wst*Lst-Rst*kst-profit_st; 
 
-Lst
-kst
-Yst
-Invst
-cst
-rKst
-wst
-Rst
 
 
 %end of solutions part
 
 %set log-linearized deviation initially equal to zero
  
-R    = 0;
-w    = 0;
-c    = 0;
-L    = 0;
-rK   = 0;
-k    = 0;
-Y    = 0;
-Inv  = 0;
-X    = 0;
-infl = 0;
-A    = 0; % productivity shock
+R      = 0;
+w      = 0;
+c      = 0;
+L      = 0;
+rK     = 0;
+k      = 0;
+Y      = 0;
+Inv    = 0;
+X      = 0;
+infl   = 0;
+A      = 0; % productivity shock
+T      = 0;
+profit = 0;
 
 % This steady state variables have been checked match the dynare file.
 

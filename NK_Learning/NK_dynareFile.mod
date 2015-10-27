@@ -1,15 +1,16 @@
 // This is dynare file for New Keynesian model with learning. The main reference for this code is Gali's book (2nd chapter)
 
-var R w c L rK k Y Inv X infl A;
+var R w c L rK k Y Inv X infl A T profit;
 
 predetermined_variables k;
 
 varexo shock;
 
-parameters eta beta epsilon alpha delta rho theta alphaPI alphaY Lst kst Yst Invst cst rKst wst Rst;
+parameters eta beta epsilon alpha delta rho theta alphaPI alphaY Lst kst Yst Invst cst rKst wst Rst Tst profit_st Xst;
 
 alphaPI = 1.3;
 alphaY  = 0.5;
+Xst     = epsilon/(epsilon-1);
 
 // variables are:
 // R    - nominal interest rate
@@ -80,13 +81,21 @@ Y = (cst/Yst)*c + (Invst/Yst)*Inv;
 
 R = alphaPI*infl + alphaY*Y;
 
+// 12 eqn. Profit of firms
+
+profit*profit_st = (1-1/Xst)*Yst*Y + (Yst/Xst)*X;
+
+// 13 eqn. Transfers from central bank
+
+T*Tst = c*cst + k*kst - wst*Lst*L - wst*Lst*w - profit*profit_st - Rst*kst*R -Rst*kst*k(-1) + Rst*kst*infl;
+
 end;
 
 shocks;
 
 var shock;
 
-stderr 0.01;
+stderr 0.00001;
 
 end;
 

@@ -21,7 +21,7 @@ function [residual, g1, g2] = NK_dynareFile_static(y, x, params)
 % Warning : this file is generated automatically by Dynare
 %           from model file (.mod)
 
-residual = zeros( 11, 1);
+residual = zeros( 14, 1);
 
 %
 % Model equations
@@ -60,11 +60,20 @@ residual(10)= lhs-rhs;
 lhs =y(1);
 rhs =y(10)*params(8)+y(7)*params(9);
 residual(11)= lhs-rhs;
+lhs =y(13)*params(19);
+rhs =y(7)*params(12)*(1-1/params(20))+y(9)*params(12)/params(20);
+residual(12)= lhs-rhs;
+lhs =y(12)*params(18);
+rhs =y(10)*params(17)*params(11)+y(3)*params(14)+y(6)*params(11)-y(4)*params(16)*params(10)-y(2)*params(16)*params(10)-y(13)*params(19)-y(1)*params(17)*params(11)-params(17)*params(11)*y(14);
+residual(13)= lhs-rhs;
+lhs =y(14);
+rhs =y(6);
+residual(14)= lhs-rhs;
 if ~isreal(residual)
   residual = real(residual)+imag(residual).^2;
 end
 if nargout >= 2,
-  g1 = zeros(11, 11);
+  g1 = zeros(14, 14);
 
   %
   % Jacobian matrix
@@ -102,6 +111,20 @@ if nargout >= 2,
   g1(11,1)=1;
   g1(11,7)=(-params(9));
   g1(11,10)=(-params(8));
+  g1(12,7)=(-(params(12)*(1-1/params(20))));
+  g1(12,9)=(-(params(12)/params(20)));
+  g1(12,13)=params(19);
+  g1(13,1)=params(17)*params(11);
+  g1(13,2)=params(16)*params(10);
+  g1(13,3)=(-params(14));
+  g1(13,4)=params(16)*params(10);
+  g1(13,6)=(-params(11));
+  g1(13,10)=(-(params(17)*params(11)));
+  g1(13,12)=params(18);
+  g1(13,13)=params(19);
+  g1(13,14)=params(17)*params(11);
+  g1(14,6)=(-1);
+  g1(14,14)=1;
   if ~isreal(g1)
     g1 = real(g1)+2*imag(g1);
   end
@@ -111,6 +134,6 @@ if nargout >= 3,
   % Hessian matrix
   %
 
-  g2 = sparse([],[],[],11,121);
+  g2 = sparse([],[],[],14,196);
 end
 end

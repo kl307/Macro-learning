@@ -25,7 +25,7 @@ A_hat(1,1)      = 0.01*randn; % initialize A_hat at 1
 
 for j = 2:timePeriod+forecastPeriod
    
-    A_hat(1,j) = rho*A_hat(1,j-1) + 0.005*randn;
+    A_hat(1,j) = rho*A_hat(1,j-1) + 0.01*randn;
     
 end
 
@@ -76,12 +76,47 @@ phiK  = zeros(3,timePeriod);
 
 % now initialize coefs as small random numbers
 
-phiR(:,1)  = 0.1*randn(3,1);
-phiW(:,1)  = 0.1*randn(3,1);
-phiPi(:,1) = 0.1*randn(3,1);
-phiT(:,1)  = 0.1*randn(3,1);
-phiK(:,1)  = 0.1*randn(3,1);
-D_Old      = eye(3); % initialize D as an identity matrix (meaning there are no cors between variables
+% initialize phiR
+
+phiR(1,1) = Rst - Rst * (-0.419633);
+phiR(2,1) = Rst/kst * (-0.419633);
+phiR(3,1) = (-0.602821) * Rst;
+
+% phiW
+
+phiW(1,1) = wst - wst * 0.349476;
+phiW(2,1) = wst/kst * 0.349476;
+phiW(3,1) = 0.653660 * wst;
+
+% phiPi
+
+phiPi(1,1) = 1 - (-0.381280);
+phiPi(2,1) = 1/kst * (-0.381280);
+phiPi(3,1) = (-0.381280);
+
+% phiK
+
+phiK(1,1) = kst - kst * 0.935990;
+phiK(2,1) = 0.935990;
+phiK(3,1) = 0.077900 * kst;
+
+% phiT
+
+phiT(1,1) = Tst - Tst * (91.382269); 
+phiT(2,1) = Tst/kst * (91.382269);
+phiT(3,1) = -16.614561 * Tst;
+
+D_Old      = eye(3);        % initialize D as an identity matrix (meaning there are no cors between variables
+
+% update D_Old using correlations from dynare
+
+D_Old(1,2) = kst;
+D_Old(2,1) = kst;
+D_Old(3,3) = 0.0005;
+
+D_Old(2,3) = sqrt(0.0005) * sqrt(0.0004)*kst*0.6533;
+D_Old(3,2) = sqrt(0.0005) * sqrt(0.0004)*kst*0.6533;
+D_Old(2,2) = (kst^2)*(1+0.0004);
 
 % compute Lst coefficient
 
@@ -115,8 +150,7 @@ for t = 2:timePeriod
        % LEARNING ALGO, BEGIN
        
        keqing  = [1 allVariables(2,t) A_hat_predicted(1,1) ]'; % this is capital and productivity shock at T-1
-     
-       
+
        % calculate predictions based on estimates for one period ahead
        
        CGpredictedR(1,t-1)  = phiR(:,t-1)'  * keqing; % R

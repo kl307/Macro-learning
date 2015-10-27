@@ -17,15 +17,15 @@ CGpredictedPi   = zeros(1,timePeriod);
 CGpredictedT    = zeros(1,timePeriod);
 CGpredictedK    = zeros(1,timePeriod);
 
-xx%x create vector of shocks
+% create vector of shocks
 
 A_hat           = zeros(1,timePeriod+forecastPeriod);
 A_hat_predicted = zeros(1,timePeriod+forecastPeriod);
-A_xzhat(1,1)      = 0.01*randn; % initialize A_hat at 1
+A_hat(1,1)      = 0.01*randn; % initialize A_hat at 1
 
 for j = 2:timePeriod+forecastPeriod
    
-    A_hat(1,j) = rho*A_hat(1,j-1) + 0.005*randn;
+    A_hat(1,j) = rho*A_hat(1,j-1) + 0.01*randn;
     
 end
 
@@ -76,12 +76,46 @@ phiK  = zeros(3,timePeriod);
 
 % now initialize coefs as small random numbers
 
-phiR(:,1)  = 0.001*randn(3,1);
-phiW(:,1)  = 0.001*randn(3,1);
-phiPi(:,1) = 0.001*randn(3,1);
-phiT(:,1)  = 0.001*randn(3,1);
-phiK(:,1)  = 0.001*randn(3,1);
-D_Old      = eye(3); % initialize D as an identity matrix (meaning there are no cors between variables
+% initialize phiR
+
+phiR(1,1) = Rst - Rst * (-0.419633);
+phiR(2,1) = Rst/kst * (-0.419633);
+phiR(3,1) = (-0.602821) * Rst;
+
+% phiW
+
+phiW(1,1) = wst - wst * 0.349476;
+phiW(2,1) = wst/kst * 0.349476;
+phiW(3,1) = 0.653660 * wst;
+
+% phiPi
+
+phiPi(1,1) = 1 - (-0.381280);
+phiPi(2,1) = 1/kst * (-0.381280);
+phiPi(3,1) = (-0.381280);
+
+% phiK
+
+phiK(1,1) = kst - kst * 0.935990;
+phiK(2,1) = 
+phiK(3,1) = 
+
+phiR(:,1)  = 0.1*randn(3,1);
+phiW(:,1)  = 0.1*randn(3,1);
+phiPi(:,1) = 0.1*randn(3,1);
+phiT(:,1)  = 0.1*randn(3,1);
+phiK(:,1)  = 0.1*randn(3,1);
+D_Old      = eye(3);        % initialize D as an identity matrix (meaning there are no cors between variables
+
+% update D_Old using correlations from dynare
+
+D_Old(1,2) = kst;
+D_Old(2,1) = kst;
+D_Old(3,3) = 0.0005;
+
+D_Old(2,3) = sqrt(0.0005) * sqrt(0.0004)*kst*0.6533;
+D_Old(3,2) = sqrt(0.0005) * sqrt(0.0004)*kst*0.6533;
+D_Old(2,2) = (kst^2)*(1+0.0004);
 
 % compute Lst coefficient
 
@@ -89,38 +123,33 @@ LsCoef = (1/( ((eta-alpha)*Lst^(eta-alpha)) - ((1-alpha)/(alpha*cst))*(1/beta)*a
 
 % do learning
 
-for t = 2:timePeriod
-  
-      % initialize at steady state
-        
-       allVariables(1,t-1)  = Lst;
-       allVariables(2,t-1)  = kst;
-       allVariables(3,t-1)  = Yst;
-       allVariables(4,t-1)  = Invst;
-       allVariables(5,t-1)  = cst;
-       allVariables(6,t-1)  = rKst;
-       allVariables(7,t-1)  = wst;
-       allVariables(8,t-1)  = Rst;
-       allVariables(9,t-1)  = profit_st;
-       allVariables(10,t-1) = Tst;
-       allVariables(11,t-1) = 1; % this is inflation
-       allVariables(12,t-1) = Xst;
+       % initialize at steady state
+       allVariables(1,1)  = Lst;
+       allVariables(2,1)  = kst;
+       allVariables(3,1)  = Yst;
+       allVariables(4,1)  = Invst;
+       allVariables(5,1)  = cst;
+       allVariables(6,1)  = rKst;
+       allVariables(7,1)  = wst;
+       allVariables(8,1)  = Rst;
+       allVariables(9,1)  = profit_st;
+       allVariables(10,1) = Tst;
+       allVariables(11,1) = 1; % this is inflation
+       allVariables(12,1) = Xst;
            
-    
 
-       
+for t = 2:timePeriod
      
        % update capital
        
        allVariables(2,t) = (1-delta)*allVariables(2,t-1) + allVariables(4,t-1);
        
-       A_hat_predicted(1,t-1) = rho*A_hat(1,t-1);
+       A_hat_predicted(1,1) = rho*A_hat(1,t-1);
        
        % LEARNING ALGO, BEGIN
        
-       keqing  = [allVariables(2,t) A_hat_predicted(1,t-1) ]'; % this is capital and productivity shock at T-1
-     
-       
+       keqing  = [1 allVariables(2,t) A_hat_predicted(1,1) ]'; % this is capital and productivity shock at T-1
+
        % calculate predictions based on estimates for one period ahead
        
        CGpredictedR(1,t-1)  = phiR(:,t-1)'  * keqing; % R
@@ -274,7 +303,7 @@ for t = 2:timePeriod
       
       % transfers
       
-      allVariables(10,t) = ;
+      allVariables(10,t) =  allVariables(5,t)+ allVariables(2,t)-allVariables(7,t)*allVariables(1,t)- allVariables(8,t)*allVariables(2,t-1)/allVariables(11,t) -allVariables(9,t);
        
                 
         zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]';               
