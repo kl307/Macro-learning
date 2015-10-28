@@ -3,7 +3,7 @@ function [ys,check]=NK_dynareFile_steadystate(ys,exe)
 
 global M_ lgy_
 
-global Lst kst Yst Invst cst rKst wst Rst Tst profit_st
+global Lst kst Yst Invst cst rKst wst Rst profit_st
 
 global eta beta epsilon alpha delta Xst theta rho
 
@@ -35,18 +35,23 @@ clear paramValues
 % steady state solution
 % steady state solution requires 'solveLabour.m' function
 
-L_init = 1;
-Lst    = fzero(@solveLabour,L_init);
-kst    = (( (Xst/alpha)*(1/beta-1+delta) )^(1/(alpha-1)))*Lst;
-Yst    = (kst^alpha)*(Lst^(1-alpha));
-Invst  = kst*delta;
-cst    = Yst - Invst;
-rKst   = (1/beta) - 1 + delta;
-wst    = (1/Xst)*(1-alpha)*(kst^alpha)*(Lst^alpha);
-Rst    = 1/beta;
+Lst       =  ((1-alpha)*(Xst/alpha*(1/beta-1+delta))^(alpha/(alpha-1))/(Xst*(Xst/alpha*(1/beta-1+delta)-delta)*(Xst/alpha*(1/beta-1+delta))^(1/(alpha-1))))^(1/eta);
 
-profit_st = (1-(1/Xst))*Yst;
-Tst       = cst+kst-wst*Lst-Rst*kst-profit_st; 
+kst       =  (Xst/alpha*(1/beta-1+delta))^(1/(alpha-1))*Lst;
+
+Yst       =   kst^alpha*Lst^(1-alpha);
+
+Rst       =   1/beta;
+
+rKst      =  (1/beta) - 1 + delta;
+
+wst       =  (1-alpha)*kst^alpha*Lst^(-alpha)/Xst;
+
+Invst     =   kst*delta;
+
+cst       =   Yst - Invst;
+
+profit_st =   (1-(1/Xst))*Yst;
 
 
 

@@ -1,7 +1,7 @@
 % this file defines parameter values
 
 eta     = 2;
-beta    = 0.98;
+beta    = 0.99;
 epsilon = 6;
 alpha   = 0.3;
 delta   = 0.025;

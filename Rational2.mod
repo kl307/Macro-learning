@@ -12,7 +12,7 @@ Y_st*Y=c_st*c+c_prim_st*c_prim;
 
 //equation 2
 
-R-c_prim(+1)-pi(+1)=-c_prim;
+R(+1)-c_prim(+1)-pi(+1)=-c_prim;
 
 //equation 3
 
