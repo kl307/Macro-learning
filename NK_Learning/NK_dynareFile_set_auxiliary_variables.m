@@ -5,4 +5,3 @@ function y = NK_dynareFile_set_auxiliary_variables(y, x, params)
 % Warning : this file is generated automatically by Dynare
 %           from model file (.mod)
 
-y(14)=y(6);

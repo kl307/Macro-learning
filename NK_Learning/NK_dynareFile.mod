@@ -2,7 +2,7 @@
 
 var R w c L rK k Y Inv X infl A T profit;
 
-predetermined_variables k;
+//predetermined_variables k;
 
 varexo shock;
 
@@ -47,7 +47,7 @@ A = rho*A(-1) + shock;
 
 // 3 eqn. Household Euler equation 
 
--c = -c(+1) + R(+1) - infl(+1);
+-c = -c(+1) + R - infl(+1);
 
 // 4 eqn. Labour supply
 
@@ -71,7 +71,7 @@ Y = alpha*k + (1-alpha)*L;
 
 // 9 eqn. Capital Accumulation
 
-k(+1) = (1-delta)*k + delta*Inv;
+k = (1-delta)*k(-1) + delta*Inv;
 
 // 10 eqn. Production and Investment
 
@@ -105,7 +105,7 @@ steady;
 
 check;
 
-stoch_simul(irf=10,order=1);
+stoch_simul(irf=40,order=1);
 
 conditional_variance_decomposition=1;
 

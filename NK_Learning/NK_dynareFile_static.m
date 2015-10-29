@@ -21,7 +21,7 @@ function [residual, g1, g2] = NK_dynareFile_static(y, x, params)
 % Warning : this file is generated automatically by Dynare
 %           from model file (.mod)
 
-residual = zeros( 14, 1);
+residual = zeros( 13, 1);
 
 %
 % Model equations
@@ -40,7 +40,7 @@ lhs =y(2);
 rhs =y(3)+(params(1)-1)*y(4);
 residual(4)= lhs-rhs;
 lhs =y(5);
-rhs =y(11)+y(4)*(1-params(4))+(params(4)-1)*y(6)-y(9);
+rhs =y(11)+(params(4)-1)*y(6)-y(9)+y(4)*(1-params(4));
 residual(5)= lhs-rhs;
 lhs =y(1)*params(17);
 rhs =y(5)*params(15)+y(10)*params(17);
@@ -52,7 +52,7 @@ lhs =y(7);
 rhs =y(4)*(1-params(4))+params(4)*y(6);
 residual(8)= lhs-rhs;
 lhs =y(6);
-rhs =params(5)*y(8)+y(6)*(1-params(5));
+rhs =y(6)*(1-params(5))+params(5)*y(8);
 residual(9)= lhs-rhs;
 lhs =y(7);
 rhs =y(3)*params(14)/params(12)+y(8)*params(13)/params(12);
@@ -64,16 +64,13 @@ lhs =y(13)*params(18);
 rhs =y(7)*params(12)*(1-1/params(19))+y(9)*params(12)/params(19);
 residual(12)= lhs-rhs;
 lhs =y(12);
-rhs =y(10)*params(17)*params(11)+y(3)*params(14)+y(6)*params(11)-y(4)*params(16)*params(10)-y(2)*params(16)*params(10)-y(13)*params(18)-y(1)*params(17)*params(11)-params(17)*params(11)*y(14);
+rhs =y(3)*params(14)+y(6)*params(11)-y(4)*params(16)*params(10)-y(2)*params(16)*params(10)-y(13)*params(18)-y(1)*params(17)*params(11)-y(6)*params(17)*params(11)+y(10)*params(17)*params(11);
 residual(13)= lhs-rhs;
-lhs =y(14);
-rhs =y(6);
-residual(14)= lhs-rhs;
 if ~isreal(residual)
   residual = real(residual)+imag(residual).^2;
 end
 if nargout >= 2,
-  g1 = zeros(14, 14);
+  g1 = zeros(13, 13);
 
   %
   % Jacobian matrix
@@ -118,13 +115,10 @@ if nargout >= 2,
   g1(13,2)=params(16)*params(10);
   g1(13,3)=(-params(14));
   g1(13,4)=params(16)*params(10);
-  g1(13,6)=(-params(11));
+  g1(13,6)=(-(params(11)-params(17)*params(11)));
   g1(13,10)=(-(params(17)*params(11)));
   g1(13,12)=1;
   g1(13,13)=params(18);
-  g1(13,14)=params(17)*params(11);
-  g1(14,6)=(-1);
-  g1(14,14)=1;
   if ~isreal(g1)
     g1 = real(g1)+2*imag(g1);
   end
@@ -134,6 +128,6 @@ if nargout >= 3,
   % Hessian matrix
   %
 
-  g2 = sparse([],[],[],14,196);
+  g2 = sparse([],[],[],13,169);
 end
 end

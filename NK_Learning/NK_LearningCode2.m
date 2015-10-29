@@ -6,8 +6,8 @@ steadyStateSolution;
 
 clear paramValues Linit
 
-timePeriod      = 5;   % time period of model
-forecastPeriod  = 1000;  % forecasting period
+timePeriod      = 40;   % time period of model
+forecastPeriod  = 5000;  % forecasting period
 gainParam       = 0.004; % constant gain parameter
 numVars         = 12;   % number of variables in the model, without shock
 allVariables    = zeros(numVars,timePeriod); % all variables at time Tz
@@ -21,11 +21,11 @@ CGpredictedK    = zeros(1,timePeriod);
 
 A_hat           = zeros(1,timePeriod+forecastPeriod);
 A_hat_predicted = zeros(1,timePeriod+forecastPeriod);
-A_hat(1,1)      = 0.5; % initialize A_hat at 1
+A_hat(1,1)      = 0.01*randn; %initialize A_hat at 1
 
 for j = 2:timePeriod+forecastPeriod
    
-    A_hat(1,j) = rho*A_hat(1,j-1); % + 0.01*randn;
+    A_hat(1,j) = rho*A_hat(1,j-1);% + 0.01*randn;
     
 end
 
@@ -78,33 +78,33 @@ phiK  = zeros(3,timePeriod);
 
 % initialize phiR
 
-phiR(1,1) = Rst - Rst * (-0.392271);
-phiR(2,1) = (Rst/kst) * (-0.392271);
-phiR(3,1) = (-0.657788) * Rst;
+phiR(1,1) = Rst - Rst * (-0.247065);
+phiR(2,1) = (Rst/kst) * (-0.247065);
+phiR(3,1) = (-0.457680) * Rst;
 
 % phiW
 
-phiW(1,1) = wst - wst * 0.350982;
-phiW(2,1) = (wst/kst) * 0.350982;
-phiW(3,1) = 0.652100 * wst;
+phiW(1,1) = wst - wst * 0.362221;
+phiW(2,1) = (wst/kst) * 0.362221;
+phiW(3,1) = 0.723268 * wst;
 
 % phiPi
 
-phiPi(1,1) = 1 - (-0.362691);
-phiPi(2,1) = (1/kst) * (-0.362691);
-phiPi(3,1) = (-0.706303);
+phiPi(1,1) = 1 - (-0.216836);
+phiPi(2,1) = (1/kst) * (-0.216836);
+phiPi(3,1) = (-0.500761);
 
 % phiK
 
-phiK(1,1) = kst - kst * 0.949242;
-phiK(2,1) = 0.949242;
-phiK(3,1) = 0.059152*kst;
+phiK(1,1) = kst - kst * 0.932127;
+phiK(2,1) = 0.932127;
+phiK(3,1) = 0.025093*kst;
 
 % phiT
 
-phiT(1,1) = -29.561373; 
-phiT(2,1) = 29.561373/kst;
-phiT(3,1) = -4.582618;
+phiT(1,1) = -0.066387; 
+phiT(2,1) = -0.066387/kst;
+phiT(3,1) = -2.909780;
 
 D_Old      = eye(3);        % initialize D as an identity matrix (meaning there are no cors between variables
 
@@ -114,9 +114,9 @@ D_Old(1,2) = kst;
 D_Old(2,1) = kst;
 D_Old(3,3) = 0.0005;
 
-D_Old(2,3) = sqrt(0.0005) * sqrt(0.0004)*kst*0.6533;
-D_Old(3,2) = sqrt(0.0005) * sqrt(0.0004)*kst*0.6533;
-D_Old(2,2) = (kst^2)*(1+0.0004);
+D_Old(2,3) = sqrt(0.0005) * sqrt(3.6000e-05)*kst*0.6654;
+D_Old(3,2) = sqrt(0.0005) * sqrt(3.6000e-05)*kst*0.6654;
+D_Old(2,2) = (kst^2)*(1+3.6000e-05);
 
 % compute Lst coefficient
 
@@ -145,7 +145,7 @@ for t = 2:timePeriod
        
        allVariables(2,t) = (1-delta)*allVariables(2,t-1) + allVariables(4,t-1);
        
-       A_hat_predicted(1,1) = A_hat(1,t-1); % rho
+       A_hat_predicted(1,1) = A_hat(1,t); % rho
        
        % LEARNING ALGO, BEGIN
        
@@ -195,7 +195,7 @@ for t = 2:timePeriod
        
             KPredictionD(1,i)  = Deviationvalue(KPrediction(1,i),kst);
        
-            A_hat_predicted(1,i) = A_hat(1,i);  %rho*A_hat_predicted(1,i-1);
+            A_hat_predicted(1,i) = rho*A_hat_predicted(1,i-1);
        
             keqing  = [ 1 KPrediction(1,i) A_hat_predicted(1,i) ]'; 
        
@@ -240,7 +240,6 @@ for t = 2:timePeriod
           Big_Sum_Pi(1,i) = BigLambda * ((1/Rst)^i/(1-(1/Rst)))*PiPredictionD(1,i);
           Big_Sum_R(1,i)  = BigLambda * ((1/Rst)^i/(1-(1/Rst)))*RPredictionD(1,i) ;
           
-          Sum_2_Pi(1,i)   = G_X(1,i) * (beta*PiPredictionD(1,t) - PiPredictionD(1,t-1));
           
        end
        
@@ -252,9 +251,9 @@ for t = 2:timePeriod
        allVariables(11,t) = Actuallvalue(allVariables(11,t),1);
        
        % consumption
-       allVariables(5,t) = (-1/(C_0+sum(G_C))) * (C_w*Deviationvalue(CGpredictedW(1,t-1),wst) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*(Deviationvalue(CGpredictedPi(1,t),1)-Deviationvalue(CGpredictedPi(1,t-1),1))) + ...
-                           C_A*A_hat(1,t) + C_k *Deviationvalue(allVariables(2,t),kst) + TPrediction(1,t-1) + Rst*kst*(RPredictionD(1,t-1)+Deviationvalue(allVariables(2,t-1),kst)-PiPredictionD(1,t)) + ...
-                           sum(Big_Sum_Pi) - sum(Big_Sum_R) + sum(G_C_R_Sum) - sum(G_C_Pi_Sum) + sum(G_W_W_Sum) + (theta/((1-theta*beta)*(1-theta)))*sum(Sum_2_Pi) +...
+       allVariables(5,t) = (-1/(C_0+sum(G_C))) * (C_w*Deviationvalue(CGpredictedW(1,t-1),wst) + (theta/((1-theta*beta)*(1-theta)))*C_X*(beta*PiPredictionD(1,2)-PiPredictionD(1,1)) + ...
+                           C_A*A_hat(1,t) + C_k *Deviationvalue(allVariables(2,t),kst) + TPrediction(1,1) + Rst*kst*(RPredictionD(1,1)+Deviationvalue(allVariables(2,t-1),kst)-PiPredictionD(1,1)) + ...
+                           sum(Big_Sum_Pi) - sum(Big_Sum_R) + sum(G_C_R_Sum) - sum(G_C_Pi_Sum) + sum(G_W_W_Sum) + (theta/((1-theta*beta)*(1-theta)))*G_X(1,1)*(-PiPredictionD(1,2)) +...
                            sum(G_A_A_Sum) + sum(G_K_Sum) + sum(G_T_Sum));
                        
        
@@ -301,21 +300,26 @@ for t = 2:timePeriod
       
       allVariables(10,t) = allVariables(5,t)+ allVariables(2,t)-allVariables(7,t)*allVariables(1,t) - (allVariables(8,t)*allVariables(2,t-1)/allVariables(11,t)) - allVariables(9,t);
                 
-      zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]';               
-                        
-      D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
-       
-      phiR(:,t)  = phiR(:,t-1)  + gainParam * D_New \ zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning 
-      phiW(:,t)  = phiW(:,t-1)  + gainParam * D_New \ zMat * (allVariables(7,t)  - phiW(:,t-1)'  * zMat);
-      phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
-      phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
-      phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
-       
-      D_Old = D_New;
+%       zMat  = [ 1 allVariables(2,t-1) A_hat(1,t-1) ]';               
+%                         
+%       D_New = D_Old + gainParam * (zMat * zMat' - D_Old);     % update D matrix
+%        
+%       phiR(:,t)  = phiR(:,t-1)  + gainParam * inv( D_New ) * zMat * (allVariables(8,t)  - phiR(:,t-1)'  * zMat); % update learning 
+%       phiW(:,t)  = phiW(:,t-1)  + gainParam * D_New \ zMat * (allVariables(7,t)  - phiW(:,t-1)'  * zMat);
+%       phiPi(:,t) = phiPi(:,t-1) + gainParam * D_New \ zMat * (allVariables(11,t) - phiPi(:,t-1)' * zMat);
+%       phiT(:,t)  = phiT(:,t-1)  + gainParam * D_New \ zMat * (allVariables(10,t) - phiT(:,t-1)'  * zMat);
+%       phiK(:,t)  = phiK(:,t-1)  + gainParam * D_New \ zMat * (allVariables(2,t)  - phiK(:,t-1)'  * zMat);
+%        
+%       D_Old = D_New;
        
       % LEARNING ALOG, END                  
                         
-                        
+       phiR(:,t)  = phiR(:,t-1);
+       phiW(:,t)  = phiW(:,t-1);
+       phiPi(:,t) = phiPi(:,t-1);
+       phiT(:,t)  = phiT(:,t-1);
+       phiK(:,t)  = phiK(:,t-1);
+                   
    
     
     
